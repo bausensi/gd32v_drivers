@@ -1,0 +1,36 @@
+1: HD44780-based LCD Display
+============================
+An ubiquitous character LCD display design created by Hitachi in the
+decade of 1980. Despite the age of said design, it continues to live
+on as a large amount of derivatives that can be found in plenty of
+electronic devices such as power meters, remote controllers,
+keyboards, calculators
+
+2: Supported Operating Modes
+============================
+The display is controlled by GPIO bit banging and requires six
+consecutive GPIO pins in any port to operate.
+
+LSB to MSB GPIO layout: RS EN D4 D5 D6 D7
+
+4-bit Mode: The display is fed an entire byte of data by writing
+two nibbles sequentially. It is the slowest mode of operation but
+even on 4-bit mode the display is fast enough for most uses and
+it saves four extra GPIO pins compared to the other operating mode
+requiring only seven lines, but this driver further decreases it to
+six required lines by not supporting display read operations, which
+are not needed by the display to function as such.
+
+8-bit mode is NOT SUPPORTED.
+
+3: C Configuration Macros
+=========================
+
+ENABLE_HD44780: enables the device driver
+HD44780_GPIO_OFFSET: Which GPIO port bit corresponds to the LSB of the
+occupied GPIOs
+HD44780_TYPE_t: select display configuration t
+t: 1602 : 16 or 40 cols by 2 rows
+t: 1604 : 16 cols by 4 rows
+t: 2002 : 20 cols by 2 rows
+t: 2004 : 20 cols by 4 rows

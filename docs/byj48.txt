@@ -1,0 +1,36 @@
+1: 28BYJ-48 Stepper Motor
+=========================
+A cheap and extremely abundant unipolar stepper motor design found in
+3D printers, air conditioning units, DIY maker projects and more in
+5V and 12V versions. It can also be modified to be a bipolar stepper
+motor but only unipolar operation is supported by this driver.
+
+2: Supported Operating Modes
+============================
+The stepper motor is controlled by GPIO bit banging and requires four
+consecutive GPIO pins in any port to operate.
+
+Wave Drive: The most basic driving mode. A single coil is activated in
+a 4 part linear sequence every step. It takes 2048 steps to complete a
+full circle.
+
+Full Step: Two coils are active at any given time in a 4 part sequence
+every step to increase the torque output and maximum speed of the motor.
+It takes 2048 steps to complete a full circle.
+
+Half Step: Two coils are sequenced similarly to full step mode, but in
+between each sequence step, one of the coils is deactivated to perform
+a half step that yields decreased speeds but higher precision and also
+higher torque than wave drive. On half step mode, it takes 4096 half
+steps to complete a full circle.
+
+3: C Configuration Macros
+=========================
+
+ENABLE_BYJ48: enables the device driver
+BYJ48_GPIO_OFFSET: Which GPIO port bit corresponds to the LSB of the
+occupied GPIOs
+BYJ48_DRIVE_m: select operating mode m
+m: HALFSTEP : Half step
+m: FULLSTEP : Full step
+m: WAVE     : Wave drive
