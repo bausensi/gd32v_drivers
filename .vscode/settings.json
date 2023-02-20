@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "utils.h": "c",
+        "hd44780.h": "c",
+        "gd32vf103_rcu.h": "c",
+        "config.h": "c",
+        "28byj48.h": "c",
+        "byj48.h": "c",
+        "gd32vf103_gpio.h": "c"
+    }
+}
