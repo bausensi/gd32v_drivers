@@ -12,6 +12,11 @@
 */
 #pragma once
 #include <gd32vf103_gpio.h>
+
+/* Config word:                                                    */
+/* LSB 0-3: GPIO offset, 4-7: display type, 8-11: display settings */
+typedef uint64_t hd44780_t;
+
 /* Send low byte of data to display, LSB of high byte selects data/cmd  */
 void hd44780_write(uint32_t gpio_periph, uint16_t data);
 /* Init HD44780-like display in 4-bit mode  */

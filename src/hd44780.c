@@ -87,6 +87,7 @@ void hd44780_init(uint32_t gpio_periph) {
 void hd44780_print(uint32_t gpio_periph, const char *str) {
     uint32_t line = 0;
     for(uint32_t i = 0; str[i] != '\0'; i++) {
+        YIELD();
         if(str[i] == '\n') {
             line++;
             line %= HD44780_LINES;

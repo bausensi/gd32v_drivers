@@ -13,9 +13,13 @@
 #pragma once
 #include <gd32vf103_gpio.h>
 
+/* Config word:                                       */
+/* LSB 0-3: GPIO offset, 4-5: drive configuration MSB */
+typedef uint64_t byj48_t;
+
 /* Init 28byj-48 stepper motor board */
-/* GPIOs must be: bits 4-7 = IN1-4   */
-void byj48_init(uint32_t gpio_periph);
+/* GPIOs must be: IN1-4              */
+byj48_t byj48_init(uint32_t gpio_periph, uint32_t config);
 /* Move motor by n half/steps (configuration) */
 /* Sign determines direction: positive is CW  */
-void byj48_step(uint32_t gpio_periph, int32_t steps);
+void byj48_step(byj48_t *target, int32_t steps);

@@ -13,7 +13,6 @@
 #include "byj48.h"
 #include "utils.h"
 #include "config.h"
-
 #ifdef ENABLE_BYJ48
 
 #if   defined(BYJ48_DRIVE_HALFSTEP)
@@ -33,7 +32,7 @@ static const uint8_t lut_step_table[8] = {
 #elif defined(BYJ48_DRIVE_FULLSTEP)
 
 #define       BYJ48_STEPS     4
-#define       BYJ48_MIN_DELAY 2000
+#define       BYJ48_MIN_DELAY 15000
 static const uint8_t lut_step_table[4] = {
     0b00001001,
     0b00000011,
@@ -56,28 +55,33 @@ static const uint8_t lut_step_table[4] = {
 #error "Please choose a valid motor configuration"
 #endif
 
-void byj48_init(uint32_t gpio_periph) {
-    gpio_init(gpio_periph, GPIO_MODE_OUT_PP, GPIO_OSPEED_2MHZ, 0x0F << BYJ48_GPIO_OFFSET);
-    GPIO_BC(gpio_periph) = 0xF0 << BYJ48_GPIO_OFFSET; 
+byj48_t byj48_init(uint32_t gpio_periph, uint32_t config) {
+    byj48_t result = ((uint64_t)gpio_periph << 32) | config;
+    gpio_init(gpio_periph, GPIO_MODE_OUT_PP, GPIO_OSPEED_2MHZ, 0x0F << (config & 0x0F));
+    GPIO_BC(gpio_periph) = 0x0F << (config & 0x0F); 
+
+    return result;
 }
 
 static uint32_t i = 0;
-void byj48_step(uint32_t gpio_periph, int32_t steps) {
+void byj48_step(byj48_t *target, int32_t steps) {
+    uint32_t periph  = (*target >> 32);
+    uint8_t  gpio_offset = (*target & 0x0F);
     uint32_t reverse = 0;
     if(steps < 0) {
         reverse = 1;
         steps = -steps;
     }
     for(int32_t j = 0; j < steps; j++) {
-        GPIO_BC(gpio_periph)  = (0x0F << BYJ48_GPIO_OFFSET); 
-        GPIO_BOP(gpio_periph) = (reverse) ?
-            lut_step_table[BYJ48_STEPS - i] << BYJ48_GPIO_OFFSET :
-            lut_step_table[i] << BYJ48_GPIO_OFFSET;
+        GPIO_BC(periph)  = (0x0F << gpio_offset); 
+        GPIO_BOP(periph) = (reverse) ?
+            lut_step_table[BYJ48_STEPS - i] << gpio_offset :
+            lut_step_table[i] << gpio_offset;
         i++;
         i %= BYJ48_STEPS;
         usleep(BYJ48_MIN_DELAY);
     }
-    GPIO_BC(gpio_periph)  = 0xFF00; 
+    GPIO_BC(periph)  = 0x0F << gpio_offset; 
 }
 
 #endif

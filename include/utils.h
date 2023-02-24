@@ -11,10 +11,16 @@
     see <https://www.gnu.org/licenses/>. 
 */
 #pragma once
+
+/* Yield function stub to make cooperative multitasking possible */
+#ifndef YIELD
+#define YIELD(a)
+#endif
+
 #include <gd32vf103.h>
-/* Sleep for t microseconds                                   */
+/* Sleep for t microseconds                                      */
 void usleep(uint32_t t);
-/* Unsigned integers to base 10 ASCII                         */
+/* Unsigned integers to base 10 ASCII                            */
 void u8toa(uint8_t n, char *dest);
 void u16toa(uint16_t n, char *dest);
 void u32toa(uint32_t n, char *dest);

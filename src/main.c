@@ -14,42 +14,29 @@
 #include <gd32vf103_gpio.h>
 #include "hd44780.h"
 #include "byj48.h"
-#include "utils.h"
 #include "config.h"
 
-const char *str = "Uptime XXXXXX";
 int main(void) {
+    byj48_t m1, m2;
     rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
+    m1 = byj48_init(GPIOB, 0x0A);
+    m2 = byj48_init(GPIOA, 0x02);
     
-    hd44780_init(GPIOA);
-    byj48_init(GPIOB);
-    
-    hd44780_print(GPIOA, str);
-    
-    uint8_t runtime[2] = {0};
-    char buf[4];
-    char c = ':';
     while(1) {
-        runtime[0]++;
-        if(runtime[0] == 60) {
-            runtime[0] = 0;
-            runtime[1]++;
-        }
-        
-        c = (runtime[0] & 1) ? ':' : ' ';
-        
-        u8toa(runtime[1], buf);
-        hd44780_ddram_goto(GPIOA, 7);
-        hd44780_print(GPIOA, buf);
-        u8toa(runtime[0], buf);
-        hd44780_ddram_goto(GPIOA, 10);
-        hd44780_print(GPIOA, buf);
-        
-        hd44780_ddram_goto(GPIOA, 10);
-        hd44780_write_char(GPIOA, c);
-        
-        byj48_step(GPIOB, 69); 
+        byj48_step(&m1,  1024);
+        usleep(1000000);
+        byj48_step(&m2,   512);
+        usleep(1000000);
+        byj48_step(&m1, -1024);
+        usleep(1000000);
+        byj48_step(&m2,   512);
+        usleep(1000000);
+        byj48_step(&m1,  1024);
+        usleep(1000000);
+        byj48_step(&m2, -1024);
+        usleep(1000000);
+        byj48_step(&m1, -1024);
         usleep(1000000);
     }
 }

@@ -13,17 +13,18 @@
 #include "utils.h"
 
 void usleep(uint32_t t) {
-    uint64_t start_mtime, delta_mtime;
-    uint64_t tmp = get_timer_value();
-    do {
-        start_mtime = get_timer_value();
-    } while(start_mtime == tmp);
-    
-    do {
-        delta_mtime = get_timer_value() - start_mtime;
-    } while(delta_mtime < ( (SystemCoreClock / 4000000) * t));
+    for(uint32_t i = 0; i < t; i++) {
+        uint64_t start_mtime, delta_mtime;
+        uint64_t tmp = get_timer_value();
+        do {
+            start_mtime = get_timer_value();
+        } while(start_mtime == tmp);
+        
+        do {
+            delta_mtime = get_timer_value() - start_mtime;
+        } while(delta_mtime < ( (SystemCoreClock / 4000000) ));
+    }
 }
-
 void u8toa(uint8_t n, char *dest) {
     dest[3] = '\0';
     uint8_t  t = n;
